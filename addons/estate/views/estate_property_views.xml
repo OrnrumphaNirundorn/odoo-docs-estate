@@ -16,7 +16,8 @@
                 <field name="date_availability" string="Available From"/>
                 <field name="property_type_id" string="Property Type"/>
                 <!-- <field name="tag_ids" widget="many2many_tags"/>  -->
-                <!-- <field name="status" string="Status"/> -->
+                <!-- <field name="state" widget="statusbar"
+                        statusbar_visible="NEW,OFFER RECEIVED,OFFER ACCEPTED,SOLD"/> -->
 
             </list>
         </field>
@@ -28,6 +29,7 @@
         <field name="model">estate.property.type</field>
         <field name="arch" type="xml">
             <list>
+                <field name="sequence" widget="handle"/>
                 <field name="name"/>
             </list>
         </field>
@@ -66,11 +68,13 @@
         <field name="arch" type="xml">
             <form string="Property">
 
-            <header>
-                <button name="action_sold" type="object" string="Sold"/>
-                <button name="action_cancel" type="object" string="Cancel"/>
-                <!-- <field name="state" widget="statusbar"/> -->
-            </header>
+                <header>
+                    <button name="action_sold" type="object" string="Sold"
+                    invisible="state != 'offer_accepted'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                    invisible="state == 'sold'"/>
+                    <field name="state" widget="statusbar" />
+                </header>
 
                 <sheet>
                     
@@ -78,11 +82,15 @@
                         <field name="name"/>
                     </h1>
 
-                    <field name="tag_ids" widget="many2many_tags"/>
+                    <field name="tag_ids" 
+                    widget="many2many_tags"
+                    options="{'color_field': 'color'}"/>
 
                     <group>
                         <group>
-                            <field name="property_type_id" string="Property Type"/>
+                            <field name="property_type_id" 
+                            string="Property Type"
+                            options="{'no_create': True, 'no_edit': True}"/>
                             <field name="postcode"/>
                             <field name="date_availability" string="Available From"/>
                         </group>
@@ -110,15 +118,18 @@
                                 <group>
                                     <field name="garage" string="Garage"/>
                                     <field name="garden" string="Garden"/>
-                                    <field name="garden_area" string="Garden Area (sqm)"/>
-                                    <field name="garden_orientation" string="Garden Orientation"/>
+                                    <field name="garden_area" string="Garden Area (sqm)"
+                                    invisible="not garden"/>
+                                    <field name="garden_orientation" string="Garden Orientation"
+                                    invisible="not garden"/>
                                     <field name="total_area" string="Total Area (sqm)"/>
                                 </group>
 
                             </page>
 
                             <page string="Offers">
-                                <field name="offer_ids">
+                                <field name="offer_ids"
+                                        readonly="state in ('offer_accepted', 'sold', 'cancelled')">
                                     <list>
                                         <field name="price" string="Price"/>
                                         <field name="partner_id" string="Partner"/>
@@ -166,9 +177,24 @@
         <field name="arch" type="xml">
             <form string="Property Type">
                 <sheet>
-                    <group>
-                        <field name="name"/>
-                    </group>
+
+                    <h1>
+                        <field name="name" nolabel="1" readonly="id != False"/>
+                    </h1>
+
+                    <notebook>
+                        <page string="Properties">
+                            <field name="property_ids" >
+                                <list>
+                                <!-- <list create="false" edit="false" delete="false"> -->
+                                    <field name="name" string="Title"/>
+                                    <field name="expected_price" string="Expected Price"/>
+                                    <field name="state" string="Status"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+
                 </sheet>
             </form>
         </field>
