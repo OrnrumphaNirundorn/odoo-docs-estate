@@ -14,7 +14,7 @@
             "console": "integratedTerminal",
             "args": [
                 "--config=C:/Users/shish/OneDrive/Documents/odoo/custom-addons/odoo.conf",
-                "-u", "todolist"
+                "-u", "estate_account"
             ]
         }
     ]
