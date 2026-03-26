@@ -14,6 +14,12 @@ class EstateProperty(models.Model):
 
                     'invoice_line_ids': [
                         Command.create({
+                        'name': "Property Sale",
+                        'quantity': 1,
+                        'price_unit': property.selling_price,
+                        }),
+
+                        Command.create({
                             'name': '6% Commission',
                             'quantity': 1,
                             'price_unit': property.selling_price * 0.06,
